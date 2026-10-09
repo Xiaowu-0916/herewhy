@@ -2,18 +2,34 @@ name: CI
 
 on:
   push:
+    branches: [ main ]
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
+    name: Integration tests
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        shell: [powershell, pwsh]
     steps:
       - uses: actions/checkout@v4
-      - name: Run tests (${{ matrix.shell }})
-        shell: ${{ matrix.shell }}
+
+      - name: Syntax check
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile(
+            (Join-Path $PWD 'HereWhy.ps1'), [ref]$tokens, [ref]$parseErrors)
+          if ($parseErrors.Count -gt 0) {
+            $parseErrors | ForEach-Object { Write-Error "$($_.Extent.StartLineNumber): $($_.Message)" }
+            exit 1
+          }
+          Write-Host "No syntax errors."
+
+      - name: Integration tests (Windows PowerShell 5.1)
+        shell: powershell
+        run: ./tests/Test-HereWhy.ps1
+
+      - name: Integration tests (PowerShell 7)
+        shell: pwsh
         run: ./tests/Test-HereWhy.ps1
