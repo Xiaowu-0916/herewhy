@@ -66,12 +66,14 @@ try {
     [void](New-Item -ItemType Directory -Path $fixtureAppDir -Force)
     Set-Content -LiteralPath $fixtureExe -Value 'stub' -Encoding ASCII
     $env:HEREWHY_TEST_ROOT = $fixtureRoot
+    $fixtureExeExpected = ConvertTo-NormalizedPath $fixtureExe
+    $fixtureEnvExpected = ConvertTo-NormalizedPath '%HEREWHY_TEST_ROOT%\Program Files\Demo App\demo app.exe'
 
     # --- 路径解析 -----------------------------------------------------------
-    Assert-Equal $fixtureExe (ConvertTo-NormalizedPath ('"' + $fixtureExe + '" -run')) 'NormalizePath: 去掉引号与参数'
-    Assert-Equal $fixtureExe (Resolve-ExecutablePath ('"' + $fixtureExe + '" --serve')) 'ResolveExecutablePath: 带引号路径'
-    Assert-Equal $fixtureExe (Resolve-ExecutablePath ($fixtureExe + ' --serve')) 'ResolveExecutablePath: 未加引号的含空格路径'
-    Assert-Equal $fixtureExe (Resolve-ExecutablePath ('%HEREWHY_TEST_ROOT%\Program Files\Demo App\demo app.exe -q')) 'ResolveExecutablePath: 环境变量展开'
+    Assert-Equal $fixtureExeExpected (ConvertTo-NormalizedPath ('"' + $fixtureExe + '" -run')) 'NormalizePath: 去掉引号与参数'
+    Assert-Equal $fixtureExeExpected (Resolve-ExecutablePath ('"' + $fixtureExe + '" --serve')) 'ResolveExecutablePath: 带引号路径'
+    Assert-Equal $fixtureExeExpected (Resolve-ExecutablePath ($fixtureExe + ' --serve')) 'ResolveExecutablePath: 未加引号的含空格路径'
+    Assert-Equal $fixtureEnvExpected (Resolve-ExecutablePath ('%HEREWHY_TEST_ROOT%\Program Files\Demo App\demo app.exe -q')) 'ResolveExecutablePath: 环境变量展开'
     Assert-Equal 'C:\Tools\missing.exe' (Resolve-ExecutablePath 'C:\Tools\missing.exe -x') 'ResolveExecutablePath: 文件不存在时回退首段'
     Assert-Equal 'c:\foo\bar' (Get-PathKey 'C:\Foo\Bar\') 'GetPathKey: 统一小写并去掉尾斜杠'
     Assert-True (Test-PathWithin 'C:\Foo\Bar\app.exe' 'C:\Foo') 'TestPathWithin: 子目录匹配'
