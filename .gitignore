@@ -1,0 +1,9 @@
+# Local run output
+*.zip
+report.html
+report.json
+
+# Real-machine samples stay local; only synthetic samples are published
+samples/cc-switch-*
+samples/list-*
+samples/console-sample.txt

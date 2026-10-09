@@ -1,0 +1,26 @@
+====================================================================
+ HereWhy 为何在此 v1.0.0 | 后台项溯源报告
+ 目标：进程名 = ExampleAgent
+ 时间：2026-10-09 12:00:00    只读诊断，不会修改系统
+====================================================================
+
+[1/1] ExampleAgent.exe  PID 4212
+--------------------------------------------------------------------
+  位置    : C:\Program Files\Example Agent\ExampleAgent.exe
+  启动于   : 2026-10-09 09:15:22
+  身份    : Example Software Ltd. | Example Agent | v4.2.1.0
+  签名    : 有效，签名者 Example Software Ltd.
+  父链    : services.exe(712) <- wininit.exe(688)
+  网络    : TCP LISTEN 127.0.0.1:41000; 已建立连接 1 条
+  结论    : 属于已安装软件「Example Agent」；启动来源：计划任务：\Example\AgentUpdate
+
+  依据：
+   - [高] 安装归属：安装记录「Example Agent」的安装位置/图标路径匹配 C:\Program Files\Example Agent\（版本 4.2.1）
+   - [高] 计划任务：计划任务 \Example\AgentUpdate 直接执行该程序（状态 Ready）
+
+  安全操作建议（工具不会执行，请你确认后手动操作）：
+   1) 禁用计划任务 \Example\AgentUpdate
+      Disable-ScheduledTask -TaskPath '\Example\' -TaskName 'AgentUpdate'
+      注意：禁用可随时用 Enable-ScheduledTask 恢复，不删除任务。
+
+  ! 示例数据：此报告用于展示版式，不包含任何真实机器信息。

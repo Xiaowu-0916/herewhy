@@ -1,0 +1,121 @@
+{
+  "Tool": "HereWhy",
+  "Version": "1.0.0",
+  "GeneratedAt": "2026-10-09 12:00:00",
+  "Target": {
+    "Kind": "进程名",
+    "Value": "ExampleAgent"
+  },
+  "Subjects": [
+    {
+      "Scope": "process",
+      "Pid": 4212,
+      "Pids": [
+        4212
+      ],
+      "PidDisplay": "4212",
+      "Name": "ExampleAgent.exe",
+      "Path": "C:\\Program Files\\Example Agent\\ExampleAgent.exe",
+      "Exists": true,
+      "Company": "Example Software Ltd.",
+      "Product": "Example Agent",
+      "FileVersion": "4.2.1.0",
+      "Description": "Example Agent background service",
+      "Signature": {
+        "Status": "Valid",
+        "Signer": "Example Software Ltd."
+      },
+      "CommandLine": "\"C:\\Program Files\\Example Agent\\ExampleAgent.exe\" --service",
+      "Started": "2026-10-09T09:15:22",
+      "LastWriteTime": null,
+      "ParentChain": [
+        {
+          "Pid": 712,
+          "Name": "services.exe",
+          "Path": "C:\\Windows\\System32\\services.exe"
+        },
+        {
+          "Pid": 688,
+          "Name": "wininit.exe",
+          "Path": "C:\\Windows\\System32\\wininit.exe"
+        }
+      ],
+      "HostedServices": [],
+      "Network": [
+        {
+          "Protocol": "TCP",
+          "State": "Listen",
+          "LocalAddress": "127.0.0.1",
+          "LocalPort": 41000,
+          "RemoteAddress": "0.0.0.0",
+          "RemotePort": 0,
+          "Pid": 4212
+        },
+        {
+          "Protocol": "TCP",
+          "State": "Established",
+          "LocalAddress": "192.0.2.10",
+          "LocalPort": 51524,
+          "RemoteAddress": "198.51.100.20",
+          "RemotePort": 443,
+          "Pid": 4212
+        }
+      ],
+      "Ownership": {
+        "Name": "Example Agent",
+        "Publisher": "Example Software Ltd.",
+        "Version": "4.2.1",
+        "MatchBase": "C:\\Program Files\\Example Agent\\",
+        "RegistryPath": "HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\ExampleAgent",
+        "IsDriveRoot": false,
+        "Confidence": "High"
+      },
+      "Evidence": [
+        {
+          "Type": "Ownership",
+          "TypeLabel": "安装归属",
+          "Confidence": "High",
+          "SourceLabel": "安装记录：Example Agent",
+          "Detail": "安装记录「Example Agent」的安装位置/图标路径匹配 C:\\Program Files\\Example Agent\\（版本 4.2.1）",
+          "Action": null
+        },
+        {
+          "Type": "ScheduledTask",
+          "TypeLabel": "计划任务",
+          "Confidence": "High",
+          "SourceLabel": "计划任务：\\Example\\AgentUpdate",
+          "Detail": "计划任务 \\Example\\AgentUpdate 直接执行该程序（状态 Ready）",
+          "Action": {
+            "Title": "禁用计划任务 \\Example\\AgentUpdate",
+            "Command": "Disable-ScheduledTask -TaskPath '\\Example\\' -TaskName 'AgentUpdate'",
+            "Note": "禁用可随时用 Enable-ScheduledTask 恢复，不删除任务。"
+          }
+        }
+      ],
+      "Verdict": {
+        "Level": "installed",
+        "Summary": "属于已安装软件「Example Agent」；启动来源：计划任务：\\Example\\AgentUpdate",
+        "StartupSourceCount": 1
+      },
+      "Cautions": [
+        "示例数据：此报告用于展示版式，不包含任何真实机器信息。"
+      ],
+      "Actions": [
+        {
+          "Title": "禁用计划任务 \\Example\\AgentUpdate",
+          "Command": "Disable-ScheduledTask -TaskPath '\\Example\\' -TaskName 'AgentUpdate'",
+          "Note": "禁用可随时用 Enable-ScheduledTask 恢复，不删除任务。"
+        }
+      ]
+    }
+  ],
+  "ScanStats": {
+    "Processes": 180,
+    "Installed": 42,
+    "Autostart": 12,
+    "Services": 210,
+    "Tasks": 64,
+    "Network": 96
+  },
+  "Warnings": []
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HereWhy 诊断报告</title>
+<style>:root { --ink:#191b1e; --muted:#5f666d; --hair:#d5d9dc; --soft:#f5f6f7; --ok:#1f5f46; --note:#8a5a00; --alert:#7a1f1f; }
+* { box-sizing:border-box; }
+html, body { margin:0; padding:0; }
+body { background:#eef0f1; color:var(--ink); font:14px/1.65 "Segoe UI","Microsoft YaHei","PingFang SC",sans-serif; }
+.page { max-width:1040px; margin:26px auto; background:#fff; border:1px solid #c9ced2; }
+.masthead { padding:26px 38px 20px; border-bottom:2px solid var(--ink); }
+.masthead .kicker { margin:0 0 8px; font:600 11px/1 Consolas,"Cascadia Mono",monospace; color:var(--muted); }
+.masthead h1 { margin:0; font-size:23px; font-weight:650; }
+.masthead .subtitle { margin:6px 0 0; color:var(--muted); font-size:13px; }
+table.manifest, table.data { width:100%; border-collapse:collapse; }
+table.manifest { border-bottom:1px solid var(--hair); }
+table.manifest th, table.manifest td { padding:8px 12px; border-right:1px solid var(--hair); text-align:left; font-size:13px; }
+table.manifest th { width:112px; background:var(--soft); color:var(--muted); font-weight:600; }
+table.manifest tr + tr th, table.manifest tr + tr td { border-top:1px solid var(--hair); }
+.body { padding:0 38px 34px; }
+.section-heading { display:flex; align-items:center; gap:10px; margin:30px 0 10px; font-size:15px; font-weight:650; border-bottom:1px solid var(--ink); padding-bottom:7px; }
+.section-heading span { font:600 12px/1 Consolas,monospace; color:var(--muted); }
+table.data th, table.data td { padding:7px 10px; border-bottom:1px solid var(--hair); text-align:left; vertical-align:top; }
+table.data thead th { background:var(--soft); border-top:1px solid #c1c7cb; border-bottom:1px solid #c1c7cb; font-weight:600; white-space:nowrap; }
+table.data td:first-child { white-space:nowrap; }
+table.data th.rowlabel { width:150px; background:#fbfbfb; color:var(--muted); font-weight:600; }
+td.mono, .mono { font-family:Consolas,"Cascadia Mono",monospace; font-size:13px; }
+.subject { border-top:1px solid var(--ink); margin-top:34px; padding-top:18px; }
+.subject-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+.subject-title { display:flex; align-items:flex-start; gap:12px; }
+.subject-index { font:600 12px/1.8 Consolas,monospace; color:var(--muted); }
+.subject-name { margin:0; font-size:20px; font-weight:650; word-break:break-all; }
+.subject-pid { margin:2px 0 0; color:var(--muted); font:12px/1.5 Consolas,monospace; }
+.stamp { border:1px solid var(--muted); color:var(--muted); padding:4px 10px; font-size:12px; font-weight:600; white-space:nowrap; }
+.stamp.level-installed { border-color:var(--ok); color:var(--ok); }
+.stamp.level-system { border-color:#41474d; color:#41474d; }
+.stamp.level-thirdparty { border-color:var(--note); color:var(--note); }
+.stamp.level-unknown { border-color:#8b9095; color:#5f666d; }
+.subject-path { margin:8px 0 0; color:var(--muted); font:12px/1.6 Consolas,"Cascadia Mono",monospace; word-break:break-all; }
+.verdict { border:1px solid var(--hair); border-left:4px solid var(--muted); padding:9px 14px; margin:14px 0 0; }
+.verdict.level-installed { border-left-color:var(--ok); }
+.verdict.level-system { border-left-color:#41474d; }
+.verdict.level-thirdparty { border-left-color:var(--note); }
+.verdict.level-unknown { border-left-color:#8b9095; }
+.verdict-label { display:block; color:var(--muted); font-size:12px; font-weight:600; }
+.verdict p { margin:2px 0 0; }
+.section-title { margin:22px 0 8px; font-size:13px; font-weight:650; color:#3a3f45; }
+.conf { font-family:Consolas,monospace; font-size:12px; font-weight:600; }
+.conf.high { color:var(--ok); }
+.conf.med { color:var(--note); }
+.conf.low { color:var(--muted); }
+.actions { margin:0; padding-left:22px; }
+.actions li { margin:0 0 14px; }
+.action-title { margin:0 0 6px; font-weight:600; }
+.actions pre { margin:0; padding:10px 12px; background:var(--soft); border:1px solid var(--hair); font:12px/1.6 Consolas,"Cascadia Mono",monospace; white-space:pre-wrap; word-break:break-all; }
+.action-note { margin:5px 0 0; color:var(--muted); }
+.notes { margin:0; padding-left:16px; }
+.notes li { margin:0 0 6px; color:#5a4a1f; }
+.report-footer { margin-top:34px; padding-top:12px; border-top:1px solid var(--hair); color:var(--muted); font-size:12px; }
+@media print {
+  body { background:#fff; }
+  .page { margin:0; border:0; max-width:none; }
+  .subject { break-inside:avoid; }
+  .actions pre { background:#fff; }
+}
+@media (max-width:760px) {
+  .page { margin:0; border-left:0; border-right:0; }
+  .masthead, .body { padding-left:20px; padding-right:20px; }
+  table.manifest th { width:88px; }
+  .subject-head { flex-direction:column; }
+}</style></head><body>
+<div class="page">
+<header class="masthead">
+<p class="kicker">HEREWHY / DIAGNOSTIC REPORT / v1.0.0</p>
+<h1>Windows 后台项溯源报告</h1>
+<p class="subtitle">只读诊断，不修改注册表、服务、计划任务或文件</p>
+</header>
+<table class="manifest">
+<tr><th>目标</th><td colspan="3">进程名 = ExampleAgent</td></tr>
+<tr><th>生成时间</th><td>2026-10-09 12:00:00</td><th>工具版本</th><td>HereWhy 1.0.0</td></tr>
+<tr><th>扫描范围</th><td colspan="3">进程 180 / 安装记录 42 / 自启项 12 / 服务 210 / 计划任务 64 / 网络端点 96</td></tr>
+</table>
+<main class="body">
+<h2 class="section-heading"><span>01</span>总览</h2>
+<table class="data overview"><thead><tr><th>目标</th><th>PID</th><th>判定</th><th>结论摘要</th></tr></thead><tbody>
+<tr><td class="mono">ExampleAgent.exe</td><td class="mono">4212</td><td>已安装软件</td><td>属于已安装软件「Example Agent」；启动来源：计划任务：\Example\AgentUpdate</td></tr>
+</tbody></table>
+<section class="subject">
+<div class="subject-head">
+<div class="subject-title">
+<span class="subject-index">02</span>
+<div><h2 class="subject-name">ExampleAgent.exe</h2><p class="subject-pid">PID 4212</p></div>
+</div>
+<div class="stamp level-installed">已安装软件</div>
+</div>
+<p class="subject-path">C:\Program Files\Example Agent\ExampleAgent.exe</p>
+<div class="verdict level-installed"><span class="verdict-label">结论</span><p>属于已安装软件「Example Agent」；启动来源：计划任务：\Example\AgentUpdate</p></div>
+<h3 class="section-title">身份与运行信息</h3><table class="data">
+<tr><th class="rowlabel">启动时间</th><td>2026-10-09 09:15:22</td></tr>
+<tr><th class="rowlabel">公司</th><td>Example Software Ltd.</td></tr>
+<tr><th class="rowlabel">产品</th><td>Example Agent</td></tr>
+<tr><th class="rowlabel">版本</th><td>4.2.1.0</td></tr>
+<tr><th class="rowlabel">文件说明</th><td>Example Agent background service</td></tr>
+<tr><th class="rowlabel">数字签名</th><td>有效 / Example Software Ltd.</td></tr>
+<tr><th class="rowlabel">父进程链</th><td class="mono">services.exe(712) &lt;- wininit.exe(688)</td></tr>
+</table>
+<h3 class="section-title">网络端点</h3><table class="data"><thead><tr><th>协议</th><th>状态</th><th>本地地址</th><th>远程地址</th></tr></thead><tbody>
+<tr><td>TCP</td><td>监听</td><td class="mono">127.0.0.1:41000</td><td class="mono">0.0.0.0:0</td></tr>
+<tr><td>TCP</td><td>已建立</td><td class="mono">192.0.2.10:51524</td><td class="mono">198.51.100.20:443</td></tr>
+</tbody></table>
+<h3 class="section-title">溯源依据</h3><table class="data"><thead><tr><th>类型</th><th>置信度</th><th>来源</th><th>说明</th></tr></thead><tbody>
+<tr><td>安装归属</td><td><span class="conf high">高</span></td><td>安装记录：Example Agent</td><td>安装记录「Example Agent」的安装位置/图标路径匹配 C:\Program Files\Example Agent\（版本 4.2.1）</td></tr>
+<tr><td>计划任务</td><td><span class="conf high">高</span></td><td>计划任务：\Example\AgentUpdate</td><td>计划任务 \Example\AgentUpdate 直接执行该程序（状态 Ready）</td></tr>
+</tbody></table>
+<h3 class="section-title">建议操作</h3><p class="action-note">以下命令不会被 HereWhy 自动执行，请确认后再手动运行。</p><ol class="actions">
+<li><p class="action-title">禁用计划任务 \Example\AgentUpdate</p><pre>Disable-ScheduledTask -TaskPath '\Example\' -TaskName 'AgentUpdate'</pre><p class="action-note">禁用可随时用 Enable-ScheduledTask 恢复，不删除任务。</p></li>
+</ol>
+<h3 class="section-title">注意事项</h3><ul class="notes">
+<li>示例数据：此报告用于展示版式，不包含任何真实机器信息。</li>
+</ul>
+</section>
+
+<footer class="report-footer">
+本报告由 HereWhy 1.0.0 生成于 2026-10-09 12:00:00。结论来自本机注册表、服务、计划任务、启动项与进程数据的交叉比对；间接启动（脚本或批处理转发）可能只能给出中低置信度线索。工具只读，不执行任何修复操作。
+</footer>
+</main></div></body></html>
